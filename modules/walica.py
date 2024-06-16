@@ -1,5 +1,5 @@
 from discord import (
-	Cog, Bot, ApplicationContext
+	Cog, Bot, ApplicationContext, Member
 )
 from discord.ext.commands import slash_command as command
 from discord import option
@@ -162,4 +162,48 @@ class Walica(Cog):
 		
 		remove(filepath)
 		await ctx.respond('イベント `%s` を削除しました！' % eventData['eventName'])
+		return
+	
+	@command(
+		name = 'view-payment',
+		description = '誰に払うかを確認します [Module: Walica]'
+	)
+	@option(
+		name = 'event_id',
+		type = str,
+		description = '対象のイベントID',
+		autocomplete = AutoComplete.getWalicaEvent,
+		required = True
+	)
+	@option(
+		name = 'target_user',
+		type = Member,
+		description = '対象のユーザー',
+		required = False
+	)
+	async def __view_payment(self, ctx: ApplicationContext, event_id: str, target_user: Member | None = None) -> None:
+		if not target_user:
+			target_user: Member = ctx.user
+		
+		filepath = '%s/.events/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, event_id)
+		if not isfile(filepath):
+			await ctx.respond('Error: イベントID `%s` は存在しません！' % event_id)
+			return
+		with open(filepath, 'r') as fp:
+			eventData = load(fp)
+
+		payments = []
+		totalCost = 0
+		for payment in eventData['eventCostDetails']:
+			if str(target_user.id) in payment['targets'].keys() and str(target_user.id) != str(payment['itemIssuer']['id']):
+				payments.append({
+					'itemId': payment['itemId'],
+					'itemName': payment['itemName'],
+					'from': str(target_user.display_name),
+					'to': payment['itemIssuer']['name'],
+					'cost': payment['targets'][str(target_user.id)]
+				})
+				totalCost += payment['targets'][str(target_user.id)]
+		
+		await ctx.respond(payments)
 		return
