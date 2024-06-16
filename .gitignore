@@ -2,6 +2,7 @@
 eew/
 __pycache__/
 tests/
+web/
 
 #Files: Other
 *.env
