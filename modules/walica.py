@@ -1,12 +1,13 @@
 from discord import (
-	Cog, Bot, ApplicationContext, Member
+	Cog, Bot, ApplicationContext, Member, Embed
 )
 from discord.ext.commands import slash_command as command
-from discord import option
+from discord import option, Color
 from .functions import log
 from .constants import CONST_OTHERS
 from .autocomplete import AutoComplete
 
+from datetime import datetime as dt
 from uuid import uuid4
 from json import dump, load
 from os.path import isfile
@@ -204,6 +205,20 @@ class Walica(Cog):
 					'cost': payment['targets'][str(target_user.id)]
 				})
 				totalCost += payment['targets'][str(target_user.id)]
-		
-		await ctx.respond(payments)
+
+		embed = Embed(title='支払い詳細', color=Color.from_rgb(140, 255, 140))
+		embed.set_author(
+			name = CONST_OTHERS.BOT_NAME,
+			icon_url = CONST_OTHERS.BOT_ICON_URL
+		)
+		embed.description = 'イベント: %s (EventID: %s)' % (eventData['eventName'], eventData['eventId'])
+		if len(payments) == 0:
+			embed.add_field(name='項目なし', value='支払う項目がありません！', inline=False)
+		else:
+			for payment in payments:
+				embed.add_field(name='%s (PaymentID: %s)' % (payment['itemName'], payment['itemId']), value='%s → %s: `¥ %s`' % (payment['from'], payment['to'], format(payment['cost'], ',')), inline=False)
+		embed.add_field(name='合計金額', value='`¥ %s`' % (format(totalCost, ',')), inline=False)
+		embed.timestamp = dt.now()
+		embed.set_footer(text='%s@%s issued: /view-payment' % (ctx.author.display_name, ctx.author.name), icon_url=ctx.author.display_avatar.url)
+		await ctx.respond(embed=embed)
 		return
