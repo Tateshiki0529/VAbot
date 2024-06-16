@@ -9,6 +9,7 @@ from .autocomplete import AutoComplete
 
 from uuid import uuid4
 from json import dump
+from os.path import isfile
 
 class Walica(Cog):
 	def __init__(self, bot: Bot) -> None:
@@ -55,4 +56,26 @@ class Walica(Cog):
 		required = True
 	)
 	async def __add_item(self, ctx: ApplicationContext, event_id: str) -> None:
-		pass
+		itemId: str = str(uuid4())
+		filepath: str = '%s/.item-queue/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, itemId)
+		
+		if not isfile('%s/.events/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, event_id)):
+			await ctx.respond('Error: イベントID \'%s\' は存在しません！' % event_id)
+			return
+		data = {
+			'itemId': itemId,
+			'targetEventId': event_id,
+			'issuer': {
+				'name': ctx.user.display_name,
+				'icon': ctx.user.avatar.url,
+				'id': ctx.user.id,
+				'screenId': ctx.user.name
+			},
+			'returnTo': {
+				'guild': ctx.guild.id,
+				'channel': ctx.channel.id
+			}
+		}
+		with open(filepath, 'w') as fp: dump(data, fp)
+
+		await ctx.respond('%s/walica/add-item.php?itemId=%s' % (CONST_OTHERS.APP_URL, itemId))
