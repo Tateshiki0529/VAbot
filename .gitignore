@@ -1,0 +1,16 @@
+# Folders
+eew/
+__pycache__/
+tests/
+
+#Files: Other
+*.env
+
+#Files: Python executables
+eew_socket.py
+eew_websocket.py
+refresh_lines.py
+modules/earthquake.py
+
+#Files: JSON
+lines.json
