@@ -2,8 +2,10 @@ from discord import (
 	Cog, Bot, ApplicationContext
 )
 from discord.ext.commands import slash_command as command
+from discord import option
 from .functions import log
 from .constants import CONST_OTHERS
+from .autocomplete import AutoComplete
 
 from uuid import uuid4
 from json import dump
@@ -40,3 +42,17 @@ class Walica(Cog):
 		with open(filepath, 'w') as fp: dump(data, fp)
 
 		await ctx.respond('%s/walica/create.php?eventId=%s' % (CONST_OTHERS.APP_URL, eventId))
+	
+	@command(
+		name = 'add-item',
+		description = '割り勘の内容を追加します [Module: Walica]'
+	)
+	@option(
+		name = 'event_id',
+		type = str,
+		description = '対象のイベントID',
+		autocomplete = AutoComplete.getWalicaEvent,
+		required = True
+	)
+	async def __add_item(self, ctx: ApplicationContext, event_id: str) -> None:
+		pass
