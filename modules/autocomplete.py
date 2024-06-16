@@ -42,3 +42,16 @@ class AutoComplete:
 						value = data['eventId']
 					))
 		return output
+	
+	async def getWalicaItem(self, ctx: AutocompleteContext) -> list[OptionChoice]:
+		output: list[OptionChoice] = []
+		eventDataPath = '%s/.events/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, ctx.options['event_id'])
+		with open(eventDataPath, 'r') as fp:
+			eventData = load(fp)
+			for v in eventData['eventCostDetails']:
+				if ctx.value in v['itemName']:
+					output.append(OptionChoice(
+						name = v['itemName'],
+						value = v['itemId']
+					))
+		return output

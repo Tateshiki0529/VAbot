@@ -8,7 +8,7 @@ from .constants import CONST_OTHERS
 from .autocomplete import AutoComplete
 
 from uuid import uuid4
-from json import dump
+from json import dump, load
 from os.path import isfile
 
 class Walica(Cog):
@@ -28,6 +28,12 @@ class Walica(Cog):
 		filepath: str = '%s/.event-queue/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, eventId)
 		data = {
 			'eventId': eventId,
+			'eventIssuer': {
+				'name': ctx.user.display_name,
+				'icon': ctx.user.avatar.url,
+				'id': ctx.user.id,
+				'screenId': ctx.user.name
+			},
 			'participants': [{
 				'name': u.display_name,
 				'icon': u.avatar.url,
@@ -43,6 +49,7 @@ class Walica(Cog):
 		with open(filepath, 'w') as fp: dump(data, fp)
 
 		await ctx.respond('%s/walica/create.php?eventId=%s' % (CONST_OTHERS.APP_URL, eventId))
+		return
 	
 	@command(
 		name = 'add-item',
@@ -60,7 +67,7 @@ class Walica(Cog):
 		filepath: str = '%s/.item-queue/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, itemId)
 		
 		if not isfile('%s/.events/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, event_id)):
-			await ctx.respond('Error: イベントID \'%s\' は存在しません！' % event_id)
+			await ctx.respond('Error: イベントID `%s` は存在しません！' % event_id)
 			return
 		data = {
 			'itemId': itemId,
@@ -79,3 +86,52 @@ class Walica(Cog):
 		with open(filepath, 'w') as fp: dump(data, fp)
 
 		await ctx.respond('%s/walica/add-item.php?itemId=%s' % (CONST_OTHERS.APP_URL, itemId))
+		return
+
+	@command(
+		name = 'remove-item',
+		description = '割り勘の内容を削除します [Module: Walica]'
+	)
+	@option(
+		name = 'event_id',
+		type = str,
+		description = '対象のイベントID',
+		autocomplete = AutoComplete.getWalicaEvent,
+		required = True
+	)
+	@option(
+		name = 'item_id',
+		type = str,
+		description = '対象の項目ID',
+		autocomplete = AutoComplete.getWalicaItem,
+		required = True
+	)
+	async def __remove_item(self, ctx: ApplicationContext, event_id: str, item_id: str) -> None:
+		filepath = '%s/.events/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, event_id)
+		if not isfile(filepath):
+			await ctx.respond('Error: イベントID `%s` は存在しません！' % event_id)
+			return
+		itemData: dict = None
+		with open(filepath, 'r') as fp:
+			eventData = load(fp)
+		for v in eventData['eventCostDetails']:
+			if v['itemId'] == item_id:
+				itemData = v
+		if not itemData:
+			await ctx.respond('Error: 項目ID `%s` は存在しません！' % item_id)
+			return
+
+		if itemData['itemIssuer']['id'] != ctx.user.id:
+			await ctx.respond('Error: 登録した人しか削除できません！')
+			return
+		newItemList = []
+		for v in eventData['eventCostDetails']:
+			if v['itemId'] != item_id:
+				newItemList.append(v)
+		
+		eventData['eventCostDetails'] = newItemList
+
+		with open(filepath, 'w') as fp: dump(eventData, fp)
+
+		await ctx.respond('項目 `%s` を削除しました！' % itemData['itemName'])
+		return
