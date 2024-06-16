@@ -10,6 +10,7 @@ from .autocomplete import AutoComplete
 from uuid import uuid4
 from json import dump, load
 from os.path import isfile
+from os import remove
 
 class Walica(Cog):
 	def __init__(self, bot: Bot) -> None:
@@ -134,4 +135,31 @@ class Walica(Cog):
 		with open(filepath, 'w') as fp: dump(eventData, fp)
 
 		await ctx.respond('項目 `%s` を削除しました！' % itemData['itemName'])
+		return
+	
+	@command(
+		name = 'remove-event',
+		description = '割り勘イベントを削除します [Module: Walica]'
+	)
+	@option(
+		name = 'event_id',
+		type = str,
+		description = '対象のイベントID',
+		autocomplete = AutoComplete.getWalicaEvent,
+		required = True
+	)
+	async def __remove_event(self, ctx: ApplicationContext, event_id: str) -> None:
+		filepath = '%s/.events/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, event_id)
+		if not isfile(filepath):
+			await ctx.respond('Error: イベントID `%s` は存在しません！' % event_id)
+			return
+		with open(filepath, 'r') as fp:
+			eventData = load(fp)
+
+		if eventData['eventIssuer']['id'] != ctx.user.id:
+			await ctx.respond('Error: 作成した人しか削除できません！')
+			return
+		
+		remove(filepath)
+		await ctx.respond('イベント `%s` を削除しました！' % eventData['eventName'])
 		return
