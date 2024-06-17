@@ -4,7 +4,7 @@ from discord import (
 from discord.ext.commands import slash_command as command
 from discord import option, Color
 from .functions import log
-from .constants import CONST_OTHERS
+from .constants import CONST_OTHERS, CONST_DATE
 from .autocomplete import AutoComplete
 
 from datetime import datetime as dt
@@ -211,12 +211,12 @@ class Walica(Cog):
 		payments = []
 		totalCost = 0
 		for payment in eventData['eventCostDetails']:
-			if str(target_user.id) in payment['targets'].keys() and str(target_user.id) != str(payment['itemIssuer']['id']):
+			if str(target_user.id) in payment['targets'].keys():
 				payments.append({
 					'itemId': payment['itemId'],
 					'itemName': payment['itemName'],
-					'from': str(target_user.display_name),
-					'to': payment['itemIssuer']['name'],
+					'from': str(target_user.id),
+					'to': str(payment['itemIssuer']['id']),
 					'cost': payment['targets'][str(target_user.id)]
 				})
 				totalCost += payment['targets'][str(target_user.id)]
@@ -231,9 +231,70 @@ class Walica(Cog):
 			embed.add_field(name='項目なし', value='支払う項目がありません！', inline=False)
 		else:
 			for payment in payments:
-				embed.add_field(name='%s (PaymentID: %s)' % (payment['itemName'], payment['itemId']), value='%s → %s: `¥ %s`' % (payment['from'], payment['to'], format(payment['cost'], ',')), inline=False)
+				if payment['from'] == payment['to']:
+					embed.add_field(name='%s (PaymentID: %s)' % (payment['itemName'], payment['itemId']), value='<@%s>: `¥ %s`' % (payment['to'], format(payment['cost'], ',')), inline=False)
+				else:
+					embed.add_field(name='%s (PaymentID: %s)' % (payment['itemName'], payment['itemId']), value='<@%s> → <@%s>: `¥ %s`' % (payment['from'], payment['to'], format(payment['cost'], ',')), inline=False)
 		embed.add_field(name='合計金額', value='`¥ %s`' % (format(totalCost, ',')), inline=False)
 		embed.timestamp = dt.now()
 		embed.set_footer(text='%s@%s issued: /view-payment' % (ctx.author.display_name, ctx.author.name), icon_url=ctx.author.display_avatar.url)
+		await ctx.respond(embed=embed)
+		return
+	
+	@command(
+		name = 'view-item',
+		description = '特定の項目の金額を確認します [Module: Walica]'
+	)
+	@option(
+		name = 'event_id',
+		type = str,
+		description = '対象のイベントID',
+		autocomplete = AutoComplete.getWalicaEvent,
+		required = True
+	)
+	@option(
+		name = 'item_id',
+		type = str,
+		description = '対象のアイテムID',
+		required = True,
+		autocomplete = AutoComplete.getWalicaItem
+	)
+	async def __view_item(self, ctx: ApplicationContext, event_id: str, item_id: str) -> None:
+		filepath = '%s/.events/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, event_id)
+		if not isfile(filepath):
+			await ctx.respond('Error: イベントID `%s` は存在しません！' % event_id)
+			return
+		with open(filepath, 'r') as fp:
+			eventData = load(fp)
+		
+		itemData: dict = None
+		for v in eventData['eventCostDetails']:
+			if v['itemId'] == item_id:
+				itemData = v
+		if not itemData:
+			await ctx.respond('Error: 項目ID `%s` は存在しません！' % item_id)
+			return
+
+		embed = Embed(title='項目詳細', color=Color.from_rgb(140, 255, 140))
+		embed.set_author(
+			name = CONST_OTHERS.BOT_NAME,
+			icon_url = CONST_OTHERS.BOT_ICON_URL
+		)
+		details = []
+		for tKey, tVal in itemData['targets'].items():
+			if str(itemData['itemIssuer']['id']) != tKey:
+				details.append('<@%s> → <@%s>: `¥ %s`' % (tKey, itemData['itemIssuer']['id'], format(tVal, ',')))
+			else:
+				details.append('<@%s>: `¥ %s`' % (itemData['itemIssuer']['id'], format(tVal, ',')))
+
+		embed.description = 'イベント: %s (EventID: %s)' % (eventData['eventName'], eventData['eventId'])
+		embed.add_field(name='項目名', value=itemData['itemName'], inline=True)
+		embed.add_field(name='項目ID', value=itemData['itemId'], inline=True)
+		embed.add_field(name='立て替えた人', value='<@%s>' % itemData['itemIssuer']['id'], inline=True)
+		embed.add_field(name='作成日時', value=dt.fromtimestamp(itemData['itemCreatedAt']).strftime(CONST_DATE.FORMAT), inline=True)
+		embed.add_field(name='かかった金額', value='`¥ %s`' % format(itemData['itemCost'], ','), inline=True)
+		embed.add_field(name='割り勘詳細', value='\n'.join(details), inline=False)
+		embed.timestamp = dt.now()
+		embed.set_footer(text='%s@%s issued: /view-item' % (ctx.author.display_name, ctx.author.name), icon_url=ctx.author.display_avatar.url)
 		await ctx.respond(embed=embed)
 		return
