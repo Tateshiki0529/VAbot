@@ -243,7 +243,7 @@ class Walica(Cog):
 	
 	@command(
 		name = 'view-item',
-		description = '特定の項目の金額を確認します [Module: Walica]'
+		description = '特定の項目を確認します [Module: Walica]'
 	)
 	@option(
 		name = 'event_id',
@@ -296,5 +296,41 @@ class Walica(Cog):
 		embed.add_field(name='割り勘詳細', value='\n'.join(details), inline=False)
 		embed.timestamp = dt.now()
 		embed.set_footer(text='%s@%s issued: /view-item' % (ctx.author.display_name, ctx.author.name), icon_url=ctx.author.display_avatar.url)
+		await ctx.respond(embed=embed)
+		return
+	
+	@command(
+		name = 'view-event',
+		description = '特定のイベントを確認します [Module: Walica]'
+	)
+	@option(
+		name = 'event_id',
+		type = str,
+		description = '対象のイベントID',
+		autocomplete = AutoComplete.getWalicaEvent,
+		required = True
+	)
+	async def __view_event(self, ctx: ApplicationContext, event_id: str) -> None:
+		filepath = '%s/.events/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, event_id)
+		if not isfile(filepath):
+			await ctx.respond('Error: イベントID `%s` は存在しません！' % event_id)
+			return
+		with open(filepath, 'r') as fp:
+			eventData = load(fp)
+
+		embed = Embed(title='割り勘イベント詳細', color=Color.from_rgb(140, 255, 140))
+		embed.set_author(
+			name = CONST_OTHERS.BOT_NAME,
+			icon_url = CONST_OTHERS.BOT_ICON_URL
+		)
+
+		embed.add_field(name='イベント名', value=eventData['eventName'], inline=True)
+		embed.add_field(name='イベントID', value=eventData['eventId'], inline=True)
+		embed.add_field(name='作成者', value='<@%s>' % eventData['eventIssuer']['id'], inline=True)
+		embed.add_field(name='作成日時', value=dt.fromtimestamp(eventData['eventCreatedAt']).strftime(CONST_DATE.FORMAT), inline=True)
+		embed.add_field(name='参加者', value=' '.join(['<@%s>' % p['id'] for p in eventData['eventParticipants']]), inline=True)
+		embed.add_field(name='項目一覧', value='\n'.join(['・%s by <@%s> `(¥ %s)`' % (p['itemName'], p['itemIssuer']['id'], format(p['itemCost'], ',')) for p in eventData['eventCostDetails']]), inline=False)
+		embed.timestamp = dt.now()
+		embed.set_footer(text='%s@%s issued: /view-event' % (ctx.author.display_name, ctx.author.name), icon_url=ctx.author.display_avatar.url)
 		await ctx.respond(embed=embed)
 		return

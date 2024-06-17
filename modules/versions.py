@@ -1,6 +1,16 @@
 class VersionInfo:
-	version = '4.5.0'
+	version = '4.6.0'
 	description = {
+		'4.6.0': '''
+・新たに以下の機能を実装しています:
+　・`Walica`モジュール
+　　・割り勘イベント作成・確認・削除
+　　　- `/add-event`, `/view-event`, `/remove-event`
+　　・割り勘項目作成・確認・削除
+　　　- `/add-item`, `/view-item`, `/remove-item`
+　　・自分の支払いを確認
+　　　- `/view-payment`
+''',
 		'4.5.0': '''
 ・以下のサービスに対応しました:
 　・GitHub (https://github.com/Tateshiki0529/VABot)
