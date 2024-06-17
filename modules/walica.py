@@ -64,7 +64,27 @@ class Walica(Cog):
 		autocomplete = AutoComplete.getWalicaEvent,
 		required = True
 	)
-	async def __add_item(self, ctx: ApplicationContext, event_id: str) -> None:
+	@option(
+		name = 'for_user',
+		type = Member,
+		description = '立て替えしたメンバー',
+		required = False
+	)
+	async def __add_item(self, ctx: ApplicationContext, event_id: str, for_user: Member | None = None) -> None:
+		if not for_user:
+			user_info = {
+				'name': ctx.user.display_name,
+				'icon': ctx.user.avatar.url,
+				'id': ctx.user.id,
+				'screenId': ctx.user.name
+			}
+		else:
+			user_info = {
+				'name': for_user.display_name,
+				'icon': for_user.avatar.url,
+				'id': for_user.id,
+				'screenId': for_user.name
+			}
 		itemId: str = str(uuid4())
 		filepath: str = '%s/.item-queue/%s.json' % (CONST_OTHERS.WALICA_DIRECTORY, itemId)
 		
@@ -74,12 +94,7 @@ class Walica(Cog):
 		data = {
 			'itemId': itemId,
 			'targetEventId': event_id,
-			'issuer': {
-				'name': ctx.user.display_name,
-				'icon': ctx.user.avatar.url,
-				'id': ctx.user.id,
-				'screenId': ctx.user.name
-			},
+			'issuer': user_info,
 			'returnTo': {
 				'guild': ctx.guild.id,
 				'channel': ctx.channel.id
@@ -179,7 +194,7 @@ class Walica(Cog):
 	@option(
 		name = 'target_user',
 		type = Member,
-		description = '対象のユーザー',
+		description = '対象のメンバー',
 		required = False
 	)
 	async def __view_payment(self, ctx: ApplicationContext, event_id: str, target_user: Member | None = None) -> None:
