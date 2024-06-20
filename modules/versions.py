@@ -1,6 +1,12 @@
 class VersionInfo:
-	version = '4.6.0'
+	version = '4.6.1'
 	description = {
+		'4.6.1': '''
+・新たに以下の機能を実装しています:
+　・`Weather`モジュール
+　　・現在地取得テストコマンド
+　　　- `/get-location`
+''',
 		'4.6.0': '''
 ・新たに以下の機能を実装しています:
 　・`Walica`モジュール
