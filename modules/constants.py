@@ -11,6 +11,7 @@ class CONST_LOG:
 
 class CONST_DATE:
 	FORMAT = '%Y/%m/%d %H:%M:%S'
+	TIME_FORMAT = '%H:%M'
 
 class CONST_ENV:
 	DISCORD_TOKEN = getenv('DISCORD_TOKEN')
@@ -42,3 +43,6 @@ class CONST_OTHERS:
 class CONST_WEATHER:
 	API_URL = getenv('WEATHER_API_URL')
 	API_KEY = getenv('WEATHER_API_KEY')
+	WEATHER_ICON_URL = getenv('WEATHER_ICON_URL')
+	UNIV_LAT = getenv('UNIV_LAT')
+	UNIV_LNG = getenv('UNIV_LNG')

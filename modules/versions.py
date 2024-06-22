@@ -1,6 +1,11 @@
 class VersionInfo:
-	version = '4.6.1'
+	version = '4.6.2'
 	description = {
+		'4.6.2': '''
+・新たに以下の機能を実装しています:
+　・`Weather`モジュール
+　　・天気通知機能(仮)
+''',
 		'4.6.1': '''
 ・新たに以下の機能を実装しています:
 　・`Weather`モジュール
