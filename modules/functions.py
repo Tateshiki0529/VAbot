@@ -6,6 +6,8 @@ from stringcolor import *
 from random import choices
 from datetime import timedelta as td
 from string import digits, ascii_letters
+from os import urandom
+from hashlib import md5
 
 def log(text: str, end: str = '\n', log_level: int = CONST_LOG.INFO) -> None:
 	now = dt.now().astimezone(tz=tz(offset=td(hours=9)))
@@ -36,3 +38,9 @@ def getHms(td: td):
 	h, m = divmod(m, 60)
 
 	return h, m, s
+
+def randomStringHex(length: int = 8):
+	buf = ''
+	while len(buf) < length:
+		buf += md5(urandom(100)).hexdigest()
+	return buf[0:length]

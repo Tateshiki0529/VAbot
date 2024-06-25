@@ -1,6 +1,12 @@
 class VersionInfo:
-	version = '4.6.2'
+	version = '47.0'
 	description = {
+		'4.7.0': '''
+・新たに以下の機能を実装しています:
+　・`Voice`モジュール
+　　・通話専用チャット機能
+　　　- `/call-channel`
+''',
 		'4.6.2': '''
 ・新たに以下の機能を実装しています:
 　・`Weather`モジュール

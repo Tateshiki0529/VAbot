@@ -12,6 +12,7 @@ from modules.weather import Weather
 from modules.earthquake import Earthquake
 from modules.math import Math
 from modules.walica import Walica
+from modules.voice import Voice
 
 from emoji import emojize
 from datetime import datetime as dt, timezone as tz, timedelta as td
@@ -37,6 +38,7 @@ class SlashFixV4(Cog):
 		self.bot.add_cog(Earthquake(bot=bot))
 		self.bot.add_cog(Math(bot=bot))
 		self.bot.add_cog(Walica(bot=bot))
+		self.bot.add_cog(Voice(bot=bot))
 		log('[Core] All modules loaded.')
 		return
 	
@@ -131,7 +133,10 @@ class SlashFixV4(Cog):
 			await ctx.respond('Error: このコマンドは管理者以外使用できません。')
 			return
 		await ctx.respond(emojize(':wave:'))
-		await ctx.bot.close()
+		cogs = [c for c in self.bot.cogs]
+		for cog in cogs:
+			self.bot.remove_cog(cog)
+		await self.bot.close()
 		return
 
 	
