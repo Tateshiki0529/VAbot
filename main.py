@@ -13,6 +13,7 @@ from modules.earthquake import Earthquake
 from modules.math import Math
 from modules.walica import Walica
 from modules.voice import Voice
+from modules.voicevox import VOICEVOX
 
 from emoji import emojize
 from datetime import datetime as dt, timezone as tz, timedelta as td
@@ -39,6 +40,7 @@ class SlashFixV4(Cog):
 		self.bot.add_cog(Math(bot=bot))
 		self.bot.add_cog(Walica(bot=bot))
 		self.bot.add_cog(Voice(bot=bot))
+		self.bot.add_cog(VOICEVOX(bot=bot))
 		log('[Core] All modules loaded.')
 		return
 	

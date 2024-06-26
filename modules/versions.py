@@ -1,6 +1,12 @@
 class VersionInfo:
-	version = '47.0'
+	version = '4.8.0'
 	description = {
+		'4.8.0': '''
+・新たに以下の機能を実装しています:
+　・`VOICEVOX`モジュール
+　　・音声合成コマンド
+　　　- `/make-voice`
+''',
 		'4.7.0': '''
 ・新たに以下の機能を実装しています:
 　・`Voice`モジュール
