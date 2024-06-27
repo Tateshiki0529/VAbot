@@ -1,6 +1,12 @@
 class VersionInfo:
-	version = '4.8.0'
+	version = '4.8.1'
 	description = {
+		'4.8.1': '''
+・新たに以下の機能を実装しています:
+　・`VOICEVOX`モジュール
+　　・文字読み上げ機能(仮)
+　　　- `/tts-vv`
+''',
 		'4.8.0': '''
 ・新たに以下の機能を実装しています:
 　・`VOICEVOX`モジュール
