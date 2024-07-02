@@ -1,6 +1,7 @@
 from discord import (
-	Cog, Bot, ApplicationContext, File, OptionChoice, Message, FFmpegPCMAudio
+	Cog, Bot, ApplicationContext, File, OptionChoice, Message, FFmpegPCMAudio, VoiceClient
 )
+from discord import ClientException
 from discord import option
 from discord.ext.commands import slash_command as command
 from urllib.parse import urlencode
@@ -153,7 +154,13 @@ class VOICEVOX(Cog):
 		else:
 			self.vc = ctx.user.voice.channel
 		
-		self.voice = await self.vc.connect()
+		try:
+			self.voice = await self.vc.connect()
+		except ClientException:
+			for client in self.bot.voice_clients:
+				client: VoiceClient = client
+				if client.guild == ctx.guild:
+					self.voice = client
 		self.tts = True
 		self.tts_speaker = speaker
 		await ctx.respond('ボイスチャンネル %s に接続しました！' % self.vc.mention)
@@ -162,13 +169,7 @@ class VOICEVOX(Cog):
 	@Cog.listener()
 	async def on_message(self, msg: Message) -> None:
 		if self.tts and self.voice and self.tts_speaker and not msg.author.bot:
-			splitted = msg.content.splitlines()
-			audios: list[bytes | None] = []
-			'''for i in range(0, len(splitted)):
-				if i == 0:
-					audios.append(self.getAudio('%sさん %s' % (msg.author.display_name, splitted[i]), self.tts_speaker))
-				else:
-					audios.append(self.getAudio('%s' % splitted[i], self.tts_speaker))'''
+			splitted = msg.content.split('。')
 			if self.voice.is_playing(): self.voice.stop()
 			for i in range(0, len(splitted)):
 				# audio = audios[i]

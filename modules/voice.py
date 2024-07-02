@@ -46,7 +46,8 @@ class Voice(Cog):
 		description = 'コマンドのモード',
 		choices = [
 			'create',
-			'remove'
+			'remove',
+			'add'
 		],
 		required = True
 	)
