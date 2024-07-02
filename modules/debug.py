@@ -31,6 +31,5 @@ class Debug(Cog):
 			await ctx.respond('`%s`: `%s`' % (variable_name, eval(variable_name)))
 		except NameError:
 			await ctx.respond('Error: 変数 `%s` は定義されていません！' % variable_name)
-			ctx.user.n
 		
 		return

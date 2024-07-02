@@ -1,6 +1,11 @@
 class VersionInfo:
-	version = '4.8.2'
+	version = '4.8.3'
 	description = {
+		'4.8.3': '''
+・以下の機能を修正しています:
+　・`Debug`モジュール
+　　・コードの一部最適化
+''',
 		'4.8.2': '''
 ・以下の機能を修正しています:
 　・`VOICEVOX`モジュール, `Voice`モジュール
