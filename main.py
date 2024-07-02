@@ -84,8 +84,8 @@ class SlashFixV4(Cog):
 			)
 
 			embed.set_author(
-				name = '@S.U.S.VictimsAssociation',
-				icon_url = 'https://tests.ttsk3.net/images/icon.png'
+				name = CONST_OTHERS.BOT_NAME,
+				icon_url = CONST_OTHERS.BOT_ICON_URL
 			)
 			embed.add_field(
 				name = 'バージョン',
@@ -109,8 +109,8 @@ class SlashFixV4(Cog):
 				timestamp=dt.now().astimezone(tz(td(hours=9)))
 			)
 			embed.set_author(
-				name = '@S.U.S.VictimsAssociation',
-				icon_url = 'https://tests.ttsk3.net/images/icon.png'
+				name = CONST_OTHERS.BOT_NAME,
+				icon_url = CONST_OTHERS.BOT_ICON_URL
 			)
 			embed.add_field(
 				name = 'バージョン',
