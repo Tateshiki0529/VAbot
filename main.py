@@ -14,6 +14,7 @@ from modules.math import Math
 from modules.walica import Walica
 from modules.voice import Voice
 from modules.voicevox import VOICEVOX
+from modules.music import Music
 
 from emoji import emojize
 from datetime import datetime as dt, timezone as tz, timedelta as td
@@ -41,6 +42,7 @@ class SlashFixV4(Cog):
 		self.bot.add_cog(Walica(bot=bot))
 		self.bot.add_cog(Voice(bot=bot))
 		self.bot.add_cog(VOICEVOX(bot=bot))
+		self.bot.add_cog(Music(bot=bot))
 		log('[Core] All modules loaded.')
 		return
 	
@@ -125,12 +127,12 @@ class SlashFixV4(Cog):
 		await ctx.respond(embed=embed)
 		return
 	
-	# Command: /stop
+	# Command: /stop-server
 	@command(
-		name = 'stop',
+		name = 'stop-server',
 		description = 'Botを停止します [Module: Core] [Admin]'
 	)
-	async def __stop(self, ctx: ApplicationContext) -> None:
+	async def __stop_server(self, ctx: ApplicationContext) -> None:
 		if not is_owner(ctx):
 			await ctx.respond('Error: このコマンドは管理者以外使用できません。')
 			return
@@ -151,4 +153,4 @@ if __name__ == '__main__':
 	bot.add_cog(SlashFixV4(bot=bot))
 	log('[System] Module loaded.')
 	log('[System] Starting...')
-	bot.run(CONST_ENV.DISCORD_TOKEN)
+	bot.run(CONST_ENV.DISCORD_SUB_TOKEN)

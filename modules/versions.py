@@ -1,6 +1,11 @@
 class VersionInfo:
-	version = '4.8.3'
+	version = '4.9.0'
 	description = {
+		'4.9.0': '''
+・新たに以下の機能を実装しています:
+　・`Music`モジュール
+　　・音楽Bot(仮)機能
+''',
 		'4.8.3': '''
 ・以下の機能を修正しています:
 　・`Debug`モジュール
