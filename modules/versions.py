@@ -1,6 +1,12 @@
 class VersionInfo:
-	version = '4.9.0'
+	version = '4.10.0'
 	description = {
+		'4.10.0': '''
+・新たに以下の機能を実装しています:
+　・`Trolls`モジュール
+　　・114514変換コマンド from itorr/homo
+　　　- `/homo`
+''',
 		'4.9.0': '''
 ・新たに以下の機能を実装しています:
 　・`Music`モジュール
