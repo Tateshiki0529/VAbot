@@ -21,15 +21,15 @@ from .functions import log
 
 class Music(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[Music] Loading module "Music"...')
+		log('[Music] Loading extension "Music"...')
 		self.bot: Bot = bot
 		self.repeat = None
-		log('[Music] Module "Music" loaded.')
+		log('[Music] Extension "Music" loaded.')
 		return
 	
 	@command(
 		name = 'set-cookie',
-		description = '専用Cookieをセットします [Module: Music]'
+		description = '専用Cookieをセットします [Extension: Music]'
 	)
 	@option(
 		name = 'cookie_file',
@@ -58,7 +58,7 @@ class Music(Cog):
 	
 	@command(
 		name = 'play',
-		description = '音楽を再生します [Module: Music]'
+		description = '音楽を再生します [Extension: Music]'
 	)
 	@option(
 		name = 'url',
@@ -124,7 +124,7 @@ class Music(Cog):
 
 	@command(
 		name = 'pause',
-		description = '一時停止 / 一時停止解除します [Module: Music]'
+		description = '一時停止 / 一時停止解除します [Extension: Music]'
 	)
 	async def __pause(self, ctx: ApplicationContext):
 		if not self.voice.is_connected():
@@ -147,7 +147,7 @@ class Music(Cog):
 		
 	@command(
 		name = 'stop',
-		description = '再生を停止します [Module: Music]'
+		description = '再生を停止します [Extension: Music]'
 	)
 	async def __stop(self, ctx: ApplicationContext):
 		if not self.voice.is_connected():
@@ -163,7 +163,7 @@ class Music(Cog):
 
 	@command(
 		name = 'repeat',
-		description = 'リピートモードを設定します [Module: Music]'
+		description = 'リピートモードを設定します [Extension: Music]'
 	)
 	async def __stop(self, ctx: ApplicationContext, mode: str):
 		if not self.voice.is_connected():
@@ -232,3 +232,8 @@ class Music(Cog):
 			return {
 				'success': False
 			}
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(Music(bot=bot))

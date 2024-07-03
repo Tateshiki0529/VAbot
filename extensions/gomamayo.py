@@ -12,9 +12,9 @@ from .functions import log, CONST_LOG
 
 class Gomamayo(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[Gomamayo] Loading module "Gomamayo"...')
+		log('[Gomamayo] Loading extension "Gomamayo"...')
 		self.bot: Bot = bot
-		log('[Gomamayo] Module "Gomamayo" loaded.')
+		log('[Gomamayo] Extension "Gomamayo" loaded.')
 		return
 	
 	@Cog.listener()
@@ -40,7 +40,7 @@ class Gomamayo(Cog):
 	# Command: /gomamayo-debug <text>
 	@command(
 		name = 'gomamayo-debug',
-		description = 'ゴママヨを判定します [Module: Gomamayo]'
+		description = 'ゴママヨを判定します [Extension: Gomamayo]'
 	)
 	@option(
 		name = 'text',
@@ -77,7 +77,7 @@ class Gomamayo(Cog):
 	# Command: /gomamayo <text>
 	@command(
 		name = 'gomamayo',
-		description = 'ゴママヨを判定します [Module: Gomamayo]'
+		description = 'ゴママヨを判定します [Extension: Gomamayo]'
 	)
 	@option(
 		name = 'text',
@@ -120,3 +120,8 @@ class Gomamayo(Cog):
 		output, _ = await result.communicate()
 
 		return loads(output)
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(Gomamayo(bot=bot))

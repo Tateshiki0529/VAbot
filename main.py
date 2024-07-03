@@ -1,24 +1,11 @@
-from modules.functions import log, is_owner
-from modules.versions import VersionInfo
-from modules.autocomplete import AutoComplete
-from modules.constants import CONST_ENV, CONST_OTHERS, CONST_DATE
-
-from modules.debug import Debug
-from modules.images import Images
-from modules.trolls import Trolls
-from modules.gomamayo import Gomamayo
-from modules.traininfo import TrainInfo
-from modules.weather import Weather
-from modules.earthquake import Earthquake
-from modules.math import Math
-from modules.walica import Walica
-from modules.voice import Voice
-from modules.voicevox import VOICEVOX
-from modules.music import Music
+from extensions.functions import log, is_owner
+from extensions.versions import VersionInfo
+from extensions.autocomplete import AutoComplete
+from extensions.constants import CONST_ENV, CONST_OTHERS, CONST_DATE
 
 from emoji import emojize
 from datetime import datetime as dt, timezone as tz, timedelta as td
-from os.path import getmtime
+from os.path import getmtime, isfile
 from discord import (
 	Cog, Bot, Intents, ApplicationContext, Embed
 )
@@ -29,21 +16,24 @@ from discord.ext.commands import (
 
 class SlashFixV4(Cog):
 	def __init__(self, bot: Bot) -> None:
+		log('[Core] Loading module "Core"...')
 		self.bot: Bot = bot
-		log('[Core] Loading modules...')
-		self.bot.add_cog(Debug(bot=bot))
-		self.bot.add_cog(Images(bot=bot))
-		self.bot.add_cog(Trolls(bot=bot))
-		self.bot.add_cog(Gomamayo(bot=bot))
-		self.bot.add_cog(TrainInfo(bot=bot))
-		self.bot.add_cog(Weather(bot=bot))
-		self.bot.add_cog(Earthquake(bot=bot))
-		self.bot.add_cog(Math(bot=bot))
-		self.bot.add_cog(Walica(bot=bot))
-		self.bot.add_cog(Voice(bot=bot))
-		self.bot.add_cog(VOICEVOX(bot=bot))
-		self.bot.add_cog(Music(bot=bot))
-		log('[Core] All modules loaded.')
+		log('[Core] Loading extensions...')
+		self.bot.load_extension('extensions.debug')
+		self.bot.load_extension('extensions.images')
+		self.bot.load_extension('extensions.trolls')
+		self.bot.load_extension('extensions.gomamayo')
+		self.bot.load_extension('extensions.traininfo')
+		self.bot.load_extension('extensions.weather')
+		# await self.bot.load_extension(Earthquake(bot=bot))
+		self.bot.load_extension('extensions.math')
+		self.bot.load_extension('extensions.walica')
+		self.bot.load_extension('extensions.voice')
+		self.bot.load_extension('extensions.voicevox')
+		self.bot.load_extension('extensions.music')
+		self.bot.load_extension('extensions.cssearch')
+		log('[Core] All extensions loaded.')
+		log('[Core] Module "Core" loaded.')
 		return
 	
 	@Cog.listener()
@@ -62,6 +52,22 @@ class SlashFixV4(Cog):
 		log("[Core] Connection closed. Bot stopped.")
 		return
 	
+	@command(
+		name = 'reload',
+		description = 'モジュールをリロードします [Module: Core] [Admin]'
+	)
+	@option(
+		name = 'module_name',
+		type = str,
+		description = 'リロードするモジュール名',
+		autocomplete = AutoComplete.getModules
+	)
+	async def __reload(self, ctx: ApplicationContext, module_name: str) -> None:
+		if not is_owner(ctx):
+			await ctx.respond('Error: このコマンドは管理者以外使用できません。')
+			return
+		if isfile('./modules/%s.py' % module_name): self.bot.reload_extension()
+
 	# Command: /version [version]
 	@command(
 		name = 'version',
@@ -94,7 +100,7 @@ class SlashFixV4(Cog):
 			)
 			embed.add_field(
 				name = '最終更新日',
-				value = dt.fromtimestamp(getmtime('./modules/versions.py')).astimezone(tz(td(hours=9))).strftime(CONST_DATE.FORMAT),
+				value = dt.fromtimestamp(getmtime('./extensions/versions.py')).astimezone(tz(td(hours=9))).strftime(CONST_DATE.FORMAT),
 				inline = True
 			)
 			embed.add_field(

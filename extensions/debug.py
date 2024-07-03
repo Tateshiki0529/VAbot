@@ -33,3 +33,8 @@ class Debug(Cog):
 			await ctx.respond('Error: 変数 `%s` は定義されていません！' % variable_name)
 		
 		return
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(Debug(bot=bot))

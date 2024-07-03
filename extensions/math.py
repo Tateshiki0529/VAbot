@@ -7,15 +7,15 @@ from .functions import log
 
 class Math(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[Math] Loading module "Math"...')
+		log('[Math] Loading extension "Math"...')
 		self.bot: Bot = bot
-		log('[Math] Module "Math" loaded.')
+		log('[Math] Extension "Math" loaded.')
 		return
 	
 	# Command /prime <number>
 	@command(
 		name = 'prime',
-		description = '素数を判定します [Module: Math]'
+		description = '素数を判定します [Extension: Math]'
 	)
 	@option(
 		name = 'number',
@@ -50,3 +50,8 @@ class Math(Cog):
 				return False
 			i += 6
 		return True
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(Math(bot=bot))

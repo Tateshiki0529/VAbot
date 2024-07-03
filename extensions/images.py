@@ -18,14 +18,14 @@ from .autocomplete import AutoComplete
 
 class Images(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[Images] Loading module "Images"...')
+		log('[Images] Loading extension "Images"...')
 		self.bot: Bot = bot
-		log('[Images] Module "Images" loaded.')
+		log('[Images] Extension "Images" loaded.')
 		return
 
 	@command(
 		name = 'image-edit',
-		description = '登録画像の操作を行います [Module: Images]'
+		description = '登録画像の操作を行います [Extension: Images]'
 	)
 	@option(
 		name = 'mode',
@@ -165,7 +165,7 @@ class Images(Cog):
 	# Command /im <image_name>
 	@command(
 		name = 'im',
-		description = '画像を貼ります [Module: Images]'
+		description = '画像を貼ります [Extension: Images]'
 	)
 	@option(
 		name = 'image_name',
@@ -216,3 +216,8 @@ class Images(Cog):
 				return (True, 'gif')
 			case _:
 				return (False, None)
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(Images(bot=bot))

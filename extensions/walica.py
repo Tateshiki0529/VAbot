@@ -15,15 +15,15 @@ from os import remove
 
 class Walica(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[Walica] Loading module "Walica"...')
+		log('[Walica] Loading extension "Walica"...')
 		self.bot: Bot = bot
-		log('[Walica] Module "Walica" loaded.')
+		log('[Walica] Extension "Walica" loaded.')
 		return
 
 	# Command: /add-event
 	@command(
 		name = 'add-event',
-		description = '新しい割り勘イベントを作成します [Module: Walica]'
+		description = '新しい割り勘イベントを作成します [Extension: Walica]'
 	)
 	async def __add_event(self, ctx: ApplicationContext) -> None:
 		eventId: str = str(uuid4())
@@ -55,7 +55,7 @@ class Walica(Cog):
 	
 	@command(
 		name = 'add-item',
-		description = '割り勘の内容を追加します [Module: Walica]'
+		description = '割り勘の内容を追加します [Extension: Walica]'
 	)
 	@option(
 		name = 'event_id',
@@ -107,7 +107,7 @@ class Walica(Cog):
 
 	@command(
 		name = 'remove-item',
-		description = '割り勘の内容を削除します [Module: Walica]'
+		description = '割り勘の内容を削除します [Extension: Walica]'
 	)
 	@option(
 		name = 'event_id',
@@ -155,7 +155,7 @@ class Walica(Cog):
 	
 	@command(
 		name = 'remove-event',
-		description = '割り勘イベントを削除します [Module: Walica]'
+		description = '割り勘イベントを削除します [Extension: Walica]'
 	)
 	@option(
 		name = 'event_id',
@@ -182,7 +182,7 @@ class Walica(Cog):
 	
 	@command(
 		name = 'view-payment',
-		description = '誰に払うかを確認します [Module: Walica]'
+		description = '誰に払うかを確認します [Extension: Walica]'
 	)
 	@option(
 		name = 'event_id',
@@ -243,7 +243,7 @@ class Walica(Cog):
 	
 	@command(
 		name = 'view-item',
-		description = '特定の項目を確認します [Module: Walica]'
+		description = '特定の項目を確認します [Extension: Walica]'
 	)
 	@option(
 		name = 'event_id',
@@ -301,7 +301,7 @@ class Walica(Cog):
 	
 	@command(
 		name = 'view-event',
-		description = '特定のイベントを確認します [Module: Walica]'
+		description = '特定のイベントを確認します [Extension: Walica]'
 	)
 	@option(
 		name = 'event_id',
@@ -334,3 +334,8 @@ class Walica(Cog):
 		embed.set_footer(text='%s@%s issued: /view-event' % (ctx.author.display_name, ctx.author.name), icon_url=ctx.author.display_avatar.url)
 		await ctx.respond(embed=embed)
 		return
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(Walica(bot=bot))

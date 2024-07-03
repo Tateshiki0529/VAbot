@@ -17,17 +17,17 @@ from .constants import CONST_WEATHER, CONST_OTHERS, CONST_DATE
 
 class Weather(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[Weather] Loading module \"Weather\"...')
+		log('[Weather] Loading extension \"Weather\"...')
 		self.bot: Bot = bot
 		self.task = self.__send_forecast.start()
-		log('[Weather] Module \"Weather\" loaded.')
+		log('[Weather] Extension \"Weather\" loaded.')
 	
 	def cog_unload(self) -> None:
 		self.__send_forecast.cancel()
 
 	@command(
 		name = 'get-location',
-		description = '現在地を取得します [Module: Weather]'
+		description = '現在地を取得します [Extension: Weather]'
 	)
 	async def __get_location(self, ctx: ApplicationContext) -> None:
 		token = randomString(64)
@@ -107,3 +107,8 @@ class Weather(Cog):
 		embed.set_author(name='@Weather API', icon_url='%s/%s@2x.png' % (CONST_WEATHER.WEATHER_ICON_URL, weather_data['weather'][0]['icon']))
 
 		await self.bot.get_channel(1098053856681799800).send(embed=embed)
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(Weather(bot=bot))

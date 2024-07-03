@@ -14,10 +14,10 @@ from .functions import log
 
 class VOICEVOX(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[VOICEVOX] Loading module "VOICEVOX"...')
+		log('[VOICEVOX] Loading extension "VOICEVOX"...')
 		self.bot: Bot = bot
 		self.tts = False
-		log('[VOICEVOX] Module "VOICEVOX" loaded.')
+		log('[VOICEVOX] Extension "VOICEVOX" loaded.')
 
 	"""OptionChoice(name='雀松朱司', value=52),
 			OptionChoice(name='麒ヶ島宗麟', value=53),
@@ -26,7 +26,7 @@ class VOICEVOX(Cog):
 			OptionChoice(name='猫使ビィ', value=58),"""
 	@command(
 		name = 'make-voice',
-		description = '音声を合成します [Module: VOICEVOX]'
+		description = '音声を合成します [Extension: VOICEVOX]'
 	)
 	@option(
 		name = 'text',
@@ -106,7 +106,7 @@ class VOICEVOX(Cog):
 		
 	@command(
 		name = 'tts-vv',
-		description = 'VOICEVOXによる読み上げを開始します [Module: VOICEVOX]'
+		description = 'VOICEVOXによる読み上げを開始します [Extension: VOICEVOX]'
 	)
 	@option(
 		name = 'speaker',
@@ -183,3 +183,8 @@ class VOICEVOX(Cog):
 						self.voice.play(FFmpegPCMAudio('%s/voice.wav' % CONST_OTHERS.BOT_DIRECTORY))
 						while self.voice.is_playing():
 							await asleep(0.1)
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(VOICEVOX(bot=bot))

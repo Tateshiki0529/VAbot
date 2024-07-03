@@ -57,15 +57,15 @@ class TrainInfoData:
 
 class TrainInfo(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[TrainInfo] Loading module "TrainInfo"...')
+		log('[TrainInfo] Loading extension "TrainInfo"...')
 		self.bot: Bot = bot
-		log('[TrainInfo] Module "TrainInfo" loaded.')
+		log('[TrainInfo] Extension "TrainInfo" loaded.')
 		return
 	
 	# Command: /traininfo <line>
 	@command(
 		name = 'traininfo',
-		description = '運行状況を確認します [Module: TrainInfo]'
+		description = '運行状況を確認します [Extension: TrainInfo]'
 	)
 	@option(
 		name = 'line',
@@ -123,7 +123,7 @@ class TrainInfo(Cog):
 	# Command: /traininfo-local <area> <line>
 	@command(
 		name = 'traininfo-local',
-		description = '運行状況を確認します [Module: TrainInfo]'
+		description = '運行状況を確認します [Extension: TrainInfo]'
 	)
 	@option(
 		name = 'area',
@@ -195,3 +195,8 @@ class TrainInfo(Cog):
 
 		await ctx.respond(embed=embed)
 		return
+
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(TrainInfo(bot=bot))

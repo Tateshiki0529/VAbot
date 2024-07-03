@@ -1,6 +1,7 @@
 from discord import AutocompleteContext, OptionChoice
 from json import load
 from glob import glob
+from os.path import split as psplit
 
 from .versions import VersionInfo
 from .constants import CONST_OTHERS
@@ -16,6 +17,9 @@ class AutoComplete:
 		
 		return names
 	
+	async def getModules(self, ctx: AutocompleteContext) -> list[str]:
+		return [e for e in ctx.bot.extensions.keys() if ctx.value in e]
+
 	async def getVersion(self, ctx: AutocompleteContext) -> list[str]:
 		return [ver for ver in list(VersionInfo.description.keys()) if ver.startswith(ctx.value)]
 	

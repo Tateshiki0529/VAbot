@@ -14,10 +14,10 @@ from .constants import CONST_LOG, CONST_DATE, CONST_OTHERS
 
 class Voice(Cog):
 	def __init__(self, bot: Bot) -> None:
-		log('[Voice] Loading module "Voice"...')
+		log('[Voice] Loading extension "Voice"...')
 		self.bot: Bot = bot
 		self.channels: list[dict[str, any]] = []
-		log('[Voice] Module "Voice" loaded.')
+		log('[Voice] Extension "Voice" loaded.')
 		return
 
 	async def ___delete_channel(self, ch: TextChannel, chObj: dict[str, any]) -> None:
@@ -38,7 +38,7 @@ class Voice(Cog):
 
 	@command(
 		name = 'call-channel',
-		description = '通話用チャンネルを管理します [Module: Voice]'
+		description = '通話用チャンネルを管理します [Extension: Voice]'
 	)
 	@option(
 		name = 'mode',
@@ -160,3 +160,8 @@ class Voice(Cog):
 
 		# log('[Voice] State changed (VoiceChannel#%s @ %s): %s -> %s' % ((member.voice.channel.name if member.voice else '---'), member.display_name, (before.channel.name if before.channel else 'None'), (after.channel.name if after.channel else 'None')), log_level=CONST_LOG.DEBUG)
 		return
+	
+# ----------------------------
+
+def setup(bot: Bot):
+	bot.add_cog(Voice(bot=bot))

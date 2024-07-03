@@ -11,7 +11,7 @@ web/
 eew_socket.py
 eew_websocket.py
 refresh_lines.py
-modules/earthquake.py
+extensions/earthquake.py
 
 #Files: JSON
 lines.json
